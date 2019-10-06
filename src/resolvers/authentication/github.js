@@ -30,6 +30,7 @@ const GIT_CONFIG = {
   callbackURL: `${rootUrl}/auth/callback`
 }
 
+//Serialize and deserialize the user object in session.
 passport.serializeUser((user, done) => {
   done(null, user);
 });
@@ -38,6 +39,7 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+// Github strategy for OAuth
 passport.use(
   new GitHubStrategy(GIT_CONFIG, async (accessToken, refreshToken, profile, cb) => {
     const data = profile['_json']
@@ -70,6 +72,7 @@ const resolve = (app) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // auth endpoint redirects to GitHub and redirects back with callback
   app.get("/auth", passport.authenticate("github"));
   app.get(
     "/auth/callback",
@@ -79,6 +82,7 @@ const resolve = (app) => {
     }),
   );
 
+  // Base endpoint for auth and redirect
   app.get('/', async (req, res) => {
     console.log(req.get('origin'))
     let token = req.headers["x-token"] || 'NO_TOKEN';
@@ -116,6 +120,7 @@ const resolve = (app) => {
     });
   })
 
+  // endpoint for dynamic database URL
   app.get('/database-url', (req, res) => {
     const { clientID, clientSecret, username } = req.body;
     if(
