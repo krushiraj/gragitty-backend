@@ -8,7 +8,13 @@ const dbconfig = !!process.env.PRODUCTION ? production : development
 
 let sequelize;
 
-if(process.env.DB_URL) {
+if(process.env.DATABASE_URL) {
+  console.log(
+    {
+      DB_URL: process.env.DATABASE_URL,
+      dialect: dbconfig.dialect
+    }
+  )
   sequelize = new Sequelize(
     process.env.DATABASE_URL,
     { dialect: dbconfig.dialect }
