@@ -7,12 +7,16 @@ import models from "../../models";
 
 const {
   GITHUB_CLIENT_ID,
-  GITHUB_CLIENT_SECRET
+  GITHUB_CLIENT_SECRET,
+  USERNAME,
+  DATABASE_URL,
+  PRODUCTION,
+  HOME_URL
 } = process.env
 
 const rootUrl = (
-  !!process.env.PRODUCTION
-  ? process.env.HOME_URL
+  !!PRODUCTION
+  ? HOME_URL
   : "http://127.0.0.1:8000"
 );
 
@@ -75,6 +79,15 @@ const resolve = (app) => {
 
   app.get('/', (req, res) => {
     res.send({auth: req.isAuthenticated(), user: req.user})
+  })
+
+  app.get('/database-url', (req, res) => {
+    if(
+      req.isAuthenticated() &&
+      req.user.username === USERNAME
+    ) {
+      res.send(DATABASE_URL)
+    }
   })
 }
 
