@@ -2,7 +2,6 @@ import 'dotenv/config'
 import cors from 'cors'
 import morgan from 'morgan'
 import http from 'http'
-import jwt from 'jsonwebtoken'
 import DataLoader from 'dataloader'
 import express from 'express'
 import { ApolloServer, AuthenticationError } from 'apollo-server-express'
@@ -21,14 +20,10 @@ app.use(morgan('dev'))
 import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
-  const token = req.headers['x-token']
-
-  if (token) {
-    try {
-      return await jwt.verify(token, process.env.JWT_SECRET)
-    } catch (e) {
-      throw new AuthenticationError('Your session expired. Sign in again.')
-    }
+  if (req.isAuthenticated()) {
+    return req.user
+  } else {
+    throw new AuthenticationError('Your session expired. Sign in again.')
   }
 }
 
@@ -60,7 +55,7 @@ resolve(app);
 
 const server = new ApolloServer({
   introspection: true,
-  playground: true,
+  playground: true, //!!!process.env.PRODUCTION,
   typeDefs: schema,
   resolvers,
   formatError: error => {
@@ -69,7 +64,6 @@ const server = new ApolloServer({
     const message = error.message
       .replace('SequelizeValidationError: ', '')
       .replace('Validation error: ', '')
-
     return {
       ...error,
       message
@@ -87,8 +81,8 @@ const isTest = !!!process.env.PRODUCTION
 const isProduction = !!process.env.PRODUCTION
 const port = process.env.PORT || 8000
 
-sequelize.sync({ force: isTest || !isProduction }).then(async () => {
-  if (isTest || !isProduction) {
+sequelize.sync({ force: isTest }).then(async () => {
+  if (isTest) {
     // createUsersWithMessages(new Date())
   }
 

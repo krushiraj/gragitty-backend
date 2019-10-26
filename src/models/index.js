@@ -3,6 +3,7 @@ import { development, production } from '../config/config'
 
 //import all models here
 import user from './user'
+import task from './task'
 
 const dbconfig = !!process.env.PRODUCTION ? production : development
 
@@ -25,6 +26,7 @@ if(process.env.DATABASE_URL) {
 
 const models = {
   User: user(sequelize, Sequelize.DataTypes),
+  Task: task(sequelize, Sequelize.DataTypes)
 }
 
 Object.keys(models).forEach(key => {

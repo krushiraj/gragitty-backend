@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt'
 import { id } from './utils'
 
 const user = (sequelize, DataTypes) => {

@@ -83,10 +83,12 @@ const resolve = (app) => {
 
   app.get('/database-url', (req, res) => {
     if(
-      req.isAuthenticated() &&
-      req.user.username === USERNAME
+      DATABASE_URL &&
+      req.body.username === USERNAME
     ) {
       res.send(DATABASE_URL)
+    } else {
+      res.send('INVALID URL')
     }
   })
 }

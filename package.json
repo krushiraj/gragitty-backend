@@ -1,5 +1,5 @@
 {
-  "name": "gragitty",
+  "name": "gragitty-backend",
   "version": "1.0.0",
   "description": "A web application to perform art on your GitHub's profile calendar.",
   "main": "src/index.js",
@@ -37,7 +37,6 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
-    "bcrypt": "^3.0.6",
     "cors": "^2.8.5",
     "dataloader": "^1.4.0",
     "dotenv": "^8.2.0",
@@ -47,7 +46,6 @@
     "graphql-resolvers": "^0.3.3",
     "graphql-scalars": "^1.0.4",
     "http": "^0.0.0",
-    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
