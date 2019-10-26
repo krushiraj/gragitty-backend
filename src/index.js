@@ -2,6 +2,7 @@ import 'dotenv/config'
 import cors from 'cors'
 import morgan from 'morgan'
 import http from 'http'
+import jwt from "jsonwebtoken";
 import DataLoader from 'dataloader'
 import express from 'express'
 import { ApolloServer, AuthenticationError } from 'apollo-server-express'
@@ -20,14 +21,14 @@ app.use(morgan('dev'))
 import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
-  console.log(
-    {
-      auth: req.isAuthenticated(),
-      user: req.user
+  const token = req.headers["x-token"];
+
+  if (token) {
+    try {
+      return await jwt.verify(token, process.env.SECRET);
+    } catch (e) {
+      throw new AuthenticationError("Your session expired. Sign in again.");
     }
-  )
-  if (req.isAuthenticated()) {
-    return req.user
   } else {
     return null
   }

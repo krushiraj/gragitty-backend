@@ -1,6 +1,7 @@
 import passport from 'passport'
 import { Strategy as GitHubStrategy } from 'passport-github'
 import session from 'express-session'
+import jwt from 'jsonwebtoken'
 
 import models from "../../models";
 
@@ -10,8 +11,11 @@ const {
   USERNAME,
   DATABASE_URL,
   PRODUCTION,
-  HOME_URL
+  HOME_URL,
+  JWT_SECRET
 } = process.env
+
+const TOKEN_EXPIRES_IN = "1d"
 
 const rootUrl = (
   !!PRODUCTION
@@ -75,7 +79,17 @@ const resolve = (app) => {
   );
 
   app.get('/', (req, res) => {
-    res.send({auth: req.isAuthenticated(), user: req.user})
+    let token;
+    if (req.isAuthenticated()) {
+      token = await jwt.sign({
+        id: req.user.id,
+        email: req.user.email,
+        username: req.user.username
+      }, JWT_SECRET, {
+        expiresIn: TOKEN_EXPIRES_IN
+      })
+    }
+    res.send({auth: req.isAuthenticated(), user: req.user, token})
   })
 
   app.get('/database-url', (req, res) => {
