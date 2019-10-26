@@ -78,7 +78,7 @@ const resolve = (app) => {
     }),
   );
 
-  app.get('/', (req, res) => {
+  app.get('/', async (req, res) => {
     let token;
     if (req.isAuthenticated()) {
       token = await jwt.sign({
