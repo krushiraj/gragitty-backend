@@ -4,13 +4,18 @@ import { development, production } from '../config/config'
 //import all models here
 import user from './user'
 
-const dbconfig = process.env.PRODUCTION ? production : development
+const dbconfig = !!process.env.PRODUCTION ? production : development
 
-let sequelize = new Sequelize({
-  storage: dbconfig.storage,
-  dialect: dbconfig.dialect
-});
+let sequelize;
 
+if(process.env.DB_URL) {
+  sequelize = new Sequelize(
+    process.env.DATABASE_URL,
+    { dialect: dbconfig.dialect }
+  );
+} else {
+  sequelize = new Sequelize(dbconfig)
+}
 
 const models = {
   User: user(sequelize, Sequelize.DataTypes),

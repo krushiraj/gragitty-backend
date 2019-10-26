@@ -28,11 +28,12 @@
     "prettier": "^1.18.2"
   },
   "dependencies": {
-    "apollo-server": "^2.9.7",
-    "apollo-server-express": "^2.9.7",
     "@babel/core": "^7.6.4",
     "@babel/node": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
+    "@bearer/node": "^2.0.0",
+    "apollo-server": "^2.9.7",
+    "apollo-server-express": "^2.9.7",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
@@ -41,6 +42,7 @@
     "dataloader": "^1.4.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
     "graphql": "^14.5.8",
     "graphql-resolvers": "^0.3.3",
     "graphql-scalars": "^1.0.4",
@@ -49,6 +51,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
+    "pg": "^7.12.1",
     "sequelize": "^5.21.1",
     "sqlite3": "^4.1.0",
     "uuid": "^3.3.3"

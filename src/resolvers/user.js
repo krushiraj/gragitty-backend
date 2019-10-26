@@ -37,23 +37,11 @@ export default {
   },
 
   Mutation: {
-    signUp: async (parent, userDetails, { models, secret }) => {
-      const user = await models.User.create({ ...userDetails });
-
-      return { token: createToken(user, secret, "30m") };
-    },
-
     signIn: async (parent, { email, password }, { models, secret }) => {
       const user = await models.User.findOne({ where: { email } });
 
       if (!user) {
-        throw new UserInputError("No user found with this login credentials.");
-      }
-
-      const isValid = await user.validatePassword(user.password, password);
-
-      if (!isValid) {
-        throw new AuthenticationError("Invalid password.");
+        throw new UserInputError("User could not be authenticated using GitHub.");
       }
 
       return { token: createToken(user, secret, "30m") };

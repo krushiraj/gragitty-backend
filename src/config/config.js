@@ -8,7 +8,7 @@ module.exports = {
     storage: ":memory"
   },
   production: {
-    dialect: "sqlite",
-    storage: "./database.sqlite3"
+    use_env_variable: "DB_URL",
+    dialect: "postgres"
   }
-}
+};

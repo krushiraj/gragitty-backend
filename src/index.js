@@ -11,7 +11,6 @@ import schema from './schema'
 import resolvers from './resolvers'
 import models, { sequelize } from './models/index'
 import loaders from './loaders'
-// import addAuthRoutes from './resolvers/authentication'
 
 const app = express()
 
@@ -20,8 +19,6 @@ app.use(cors())
 app.use(morgan('dev'))
 
 import resolve from './resolvers/authentication/github'
-
-resolve(app)
 
 const getLoggedInUser = async req => {
   const token = req.headers['x-token']
@@ -34,6 +31,36 @@ const getLoggedInUser = async req => {
     }
   }
 }
+
+const context = async ({ req, connection }) => {
+  if (connection) {
+    return {
+      models,
+      loaders: {
+        user: new DataLoader(keys => loaders.user.batchUsers(keys, models))
+      }
+    };
+  }
+
+  if (req) {
+    const loggedInUser = await getLoggedInUser(req);
+
+    return {
+      models,
+      loggedInUser,
+      secret: process.env.JWT_SECRET,
+      loaders: {
+        user: new DataLoader(keys => loaders.user.batchUsers(keys, models))
+      }
+    };
+  }
+};
+
+resolve(app, {
+  schema,
+  context
+});
+
 
 const server = new ApolloServer({
   introspection: true,
@@ -52,29 +79,7 @@ const server = new ApolloServer({
       message
     }
   },
-  context: async ({ req, connection }) => {
-    if (connection) {
-      return {
-        models,
-        loaders: {
-          user: new DataLoader(keys => loaders.user.batchUsers(keys, models))
-        }
-      }
-    }
-
-    if (req) {
-      const loggedInUser = await getLoggedInUser(req)
-
-      return {
-        models,
-        loggedInUser,
-        secret: process.env.JWT_SECRET,
-        loaders: {
-          user: new DataLoader(keys => loaders.user.batchUsers(keys, models))
-        }
-      }
-    }
-  }
+  context
 })
 
 server.applyMiddleware({ app, path: '/graphql' })
@@ -86,9 +91,9 @@ const isTest = !!!process.env.PRODUCTION
 const isProduction = !!process.env.PRODUCTION
 const port = process.env.PORT || 8000
 
-sequelize.sync({ force: isTest || isProduction }).then(async () => {
-  if (isTest || isProduction) {
-    createUsersWithMessages(new Date())
+sequelize.sync({ force: isTest || !isProduction }).then(async () => {
+  if (isTest || !isProduction) {
+    // createUsersWithMessages(new Date())
   }
 
   httpServer.listen({ port }, () => {
@@ -96,15 +101,15 @@ sequelize.sync({ force: isTest || isProduction }).then(async () => {
   })
 })
 
-const createUsersWithMessages = async date => {
-  models.User.create(
-    {
-      email: 'hello@robin.com',
-      password: 'rwieruch',
-      firstName: 'rev',
-      lastName: 'rich',
-    }
-  ).then(async _user => {
-    console.log('user added successfully')
-  }).catch(console.error)
-}
+// const createUsersWithMessages = async date => {
+//   models.User.create(
+//     {
+//       email: 'hello@robin.com',
+//       password: 'rwieruch',
+//       firstName: 'rev',
+//       lastName: 'rich',
+//     }
+//   ).then(async _user => {
+//     console.log('user added successfully')
+//   }).catch(console.error)
+// }

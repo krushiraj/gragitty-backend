@@ -1,8 +1,9 @@
 import passport from 'passport'
 import { Strategy as GitHubStrategy } from 'passport-github'
-import models from "../../models";
+import { graphql } from 'graphql';
+import session from 'express-session'
 
-console.log({models})
+import models from "../../models";
 
 const {
   GITHUB_CLIENT_ID,
@@ -15,33 +16,74 @@ const rootUrl = (
   : "127.0.0.1:8000"
 );
 
-console.warn({ rootUrl })
-
 const GIT_CONFIG = {
   clientID: GITHUB_CLIENT_ID,
   clientSecret: GITHUB_CLIENT_SECRET,
   callbackURL: `/auth/callback`
 }
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
 passport.use(
-  new GitHubStrategy(GIT_CONFIG, (accessToken, refreshToken, profile, cb) => {
-    console.log({profile})
-    models.User.findOrCreate({ where: { githubId: profile.id } }, function(err, user) {
-      return cb(err, user);
-    });
+  new GitHubStrategy(GIT_CONFIG, async (accessToken, refreshToken, profile, cb) => {
+    const data = profile['_json']
+    if(data['type'] === 'User') {
+      const [user, created] = await models.User.findOrCreate({
+        where: {
+          email: data.email
+        },
+        defaults: {
+          profilePic: data.avatar_url,
+          name: data.name,
+          username: data.login,
+          gitProfile: profile.profileUrl
+        }
+      })
+      // const query = `
+      //   mutation {
+      //     signIn(email: "${user.email}") {
+      //       token
+      //     }
+      //   }
+      // `
+      // graphql(
+      //   schema, query, null, context
+      // ).then
+      return cb(created || user ? null : new Error("There was an error during authentication."), user);
+    } else {
+      throw TypeError('The Github profile must belong to a User.')
+    }
   })
 );
 
-const resolve = (app) => {
+const resolve = (app, { schema, context }) => {
+
+  app.use(session({
+    secret: 'session-secret',
+    saveUninitialized: true,
+    resave: false
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   app.get("/auth", passport.authenticate("github"));
   app.get(
     "/auth/callback",
-    passport.authenticate("github", { failureRedirect: "/login" }),
-    function(req, res) {
-      // Successful authentication, redirect home.
-      res.redirect("/");
-    }
+    passport.authenticate("github", {
+      failureRedirect: "/login",
+      successRedirect: "/"
+    }),
   );
+
+  app.get('/', (req, res) => {
+    res.send({auth: req.isAuthenticated(), user: req.user})
+  })
 }
 
 export default resolve

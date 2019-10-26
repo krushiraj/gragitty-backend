@@ -2,26 +2,21 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   extend type Query {
-    allUsers: [User!]
+    allUsers: [User]!
     userById(id: ID!): User
     userByEmail(email: String!): User
     currentUser: User
   }
 
   extend type Mutation {
-    signUp(
-      firstName: String!
-      lastName: String!
-      email: String!
-      password: String!
-    ): Token!
-
-    signIn(email: String!, password: String!): Token!
+    signIn(email: String!): Token!
 
     updateUser(
-      email: String!,
-      name: String!,
-      profile_pic: URL!
+      email: String
+      name: String
+      username: String
+      profilePic: URL
+      gitProfile: URL
     ): User!
 
     deleteUser(id: ID!): Boolean!
@@ -34,10 +29,10 @@ export default gql`
   type User {
     id: ID!
 
-    firstName: String!
-    lastName: String!
+    name: String!
     email: String!
-    contactNo: String
+    username: String!
     profilePic: URL!
+    gitProfile: URL!
   }
-`
+`;
