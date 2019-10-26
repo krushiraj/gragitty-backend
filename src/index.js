@@ -56,11 +56,7 @@ const context = async ({ req, connection }) => {
   }
 };
 
-resolve(app, {
-  schema,
-  context
-});
-
+resolve(app);
 
 const server = new ApolloServer({
   introspection: true,
@@ -100,16 +96,3 @@ sequelize.sync({ force: isTest || !isProduction }).then(async () => {
     console.log(`Apollo Server on http://localhost:${port}/graphql`)
   })
 })
-
-// const createUsersWithMessages = async date => {
-//   models.User.create(
-//     {
-//       email: 'hello@robin.com',
-//       password: 'rwieruch',
-//       firstName: 'rev',
-//       lastName: 'rich',
-//     }
-//   ).then(async _user => {
-//     console.log('user added successfully')
-//   }).catch(console.error)
-// }

@@ -45,16 +45,6 @@ passport.use(
           gitProfile: profile.profileUrl
         }
       })
-      // const query = `
-      //   mutation {
-      //     signIn(email: "${user.email}") {
-      //       token
-      //     }
-      //   }
-      // `
-      // graphql(
-      //   schema, query, null, context
-      // ).then
       return cb(created || user ? null : new Error("There was an error during authentication."), user);
     } else {
       throw TypeError('The Github profile must belong to a User.')
@@ -62,7 +52,7 @@ passport.use(
   })
 );
 
-const resolve = (app, { schema, context }) => {
+const resolve = (app) => {
 
   app.use(session({
     secret: 'session-secret',
