@@ -13,13 +13,13 @@ const {
 const rootUrl = (
   !!process.env.PRODUCTION
   ? process.env.HOME_URL
-  : "127.0.0.1:8000"
+  : "http://127.0.0.1:8000"
 );
 
 const GIT_CONFIG = {
   clientID: GITHUB_CLIENT_ID,
   clientSecret: GITHUB_CLIENT_SECRET,
-  callbackURL: `/auth/callback`
+  callbackURL: `${rootUrl}/auth/callback`
 }
 
 console.log({GIT_CONFIG})
