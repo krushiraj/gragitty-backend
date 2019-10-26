@@ -80,7 +80,7 @@ const resolve = (app) => {
 
   app.get('/', async (req, res) => {
     let token;
-    if (req.isAuthenticated()) {
+    if (req.code && req.isAuthenticated()) {
       token = await jwt.sign({
         id: req.user.id,
         email: req.user.email,
