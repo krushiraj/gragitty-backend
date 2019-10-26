@@ -22,11 +22,13 @@ const GIT_CONFIG = {
   callbackURL: `/auth/callback`
 }
 
-passport.serializeUser(function(user, done) {
+console.log({GIT_CONFIG})
+
+passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
