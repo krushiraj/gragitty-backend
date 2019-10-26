@@ -20,6 +20,12 @@ app.use(morgan('dev'))
 import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
+  console.log(
+    {
+      auth: req.isAuthenticated(),
+      user: req.user
+    }
+  )
   if (req.isAuthenticated()) {
     return req.user
   } else {
@@ -38,8 +44,9 @@ const context = async ({ req, connection }) => {
   }
 
   if (req) {
+    console.log('\n\nGetting logged in user\n\n')
     const loggedInUser = await getLoggedInUser(req);
-
+    console.log({loggedInUser})
     return {
       models,
       loggedInUser,
