@@ -34,6 +34,10 @@ const getLoggedInUser = async req => {
 }
 
 const context = async ({ req, connection }) => {
+  console.log({
+    req,
+    connection
+  })
   if (connection) {
     return {
       models,
