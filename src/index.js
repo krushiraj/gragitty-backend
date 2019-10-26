@@ -36,7 +36,9 @@ const getLoggedInUser = async req => {
 const context = async ({ req, connection }) => {
   console.log({
     req,
-    connection
+    connection,
+    session: req.session,
+
   })
   if (connection) {
     return {
