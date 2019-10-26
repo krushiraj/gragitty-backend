@@ -31,7 +31,7 @@ const task = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true
       },
-      defaultValue: 0
+      defaultValue: EMPTY
     },
     date: {
       type: DataTypes.DATE,
@@ -49,7 +49,8 @@ const task = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true
-      }
+      },
+      defaultValue: COMMIT
     },
     completed: {
       type: DataTypes.BOOLEAN,

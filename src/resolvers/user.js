@@ -1,5 +1,4 @@
 import { combineResolvers } from 'graphql-resolvers'
-import { AuthenticationError, UserInputError } from 'apollo-server'
 
 import { isSelfDeleteAuth, isAuthenticated } from './authorization'
 

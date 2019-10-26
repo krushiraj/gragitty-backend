@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/graphql';
+const API_URL = `${process.env.HOME_URL}/graphql`;
 
 export const signIn = async variables =>
   await axios.post(API_URL, {

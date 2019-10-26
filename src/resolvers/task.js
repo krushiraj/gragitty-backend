@@ -1,41 +1,39 @@
 import { combineResolvers } from "graphql-resolvers";
-import { AuthenticationError, UserInputError } from "apollo-server";
+import { AuthenticationError } from "apollo-server";
 
-import { isSelfDeleteAuth, isAuthenticated } from "./userization";
+import { isSelfDeleteAuth, isAuthenticated } from "./authorization";
 
 export default {
   Query: {
-    allTasks: async (parent, args, { models, loggedInUser }) => {
-      if (!loggedInUser) throw AuthenticationError();
+    allTasks: async (parent, { userId }, { models, loggedInUser }) => {
+      if (!userId && !loggedInUser) throw new AuthenticationError();
 
-      const allTasks = await models.Task.find({
+      const allTasks = await models.Task.findAll({
         where: {
-          userId: loggedInUser.id
+          userId: userId || loggedInUser.id
         }
       });
       return allTasks;
     },
     task: async (parent, { id }, { models }) => {
-      if (!loggedInUser) throw AuthenticationError();
-
       return await models.Task.findByPk(id);
     },
-    completedTasks: async (parent, args, { models, loggedInUser }) => {
-      if (!loggedInUser) throw AuthenticationError();
+    completedTasks: async (parent, { userId }, { models, loggedInUser }) => {
+      if (!userId && !loggedInUser) throw new AuthenticationError();
 
-      return await models.Task.find({
+      return await models.Task.findAll({
         where: {
-          userId: loggedInUser.id,
+          userId: userId || loggedInUser.id,
           completed: true
         }
       });
     },
-    scheduledTasks: async (parent, args, { models, loggedInUser }) => {
-      if (!loggedInUser) throw AuthenticationError();
+    scheduledTasks: async (parent, { userId }, { models, loggedInUser }) => {
+      if (!userId && !loggedInUser) throw new AuthenticationError();
 
-      return await models.Task.find({
+      return await models.Task.findAll({
         where: {
-          userId: loggedInUser.id,
+          userId: userId || loggedInUser.id,
           completed: false
         }
       });
@@ -69,8 +67,8 @@ export default {
   },
 
   Task: {
-    user: async (user, args, { models, loggedInUser }) => {
-      return await models.User.findByPk(loggedInUser.id);
+    user: async (parent, args, { models }) => {
+      return await models.User.findByPk(parent.id);
     }
   }
 };

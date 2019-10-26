@@ -2,17 +2,17 @@ import { gql } from "apollo-server-express";
 
 export default gql`
   extend type Query {
-    allTasks(): [Task]!
-    completedTasks(): [Task]!
-    scheduledTasks(): [Task]!
+    allTasks(userId: ID): [Task]!
+    completedTasks(userId: ID): [Task]!
+    scheduledTasks(userId: ID): [Task]!
     task(id: ID!): Task
   }
 
   extend type Mutation {
     createTask(
       message: String!
-      color: Integer!
-      type: Integer
+      color: String!
+      type: String
       date: DateTime
       completed: Boolean
       userId: ID!
@@ -20,8 +20,8 @@ export default gql`
 
     updateTask(
       message: String
-      color: Integer
-      type: Integer
+      color: String
+      type: String
       date: DateTime
       completed: Boolean
       userId: ID
@@ -34,7 +34,7 @@ export default gql`
     id: ID!
 
     message: String!
-    color: Integer!
+    color: String!
     type: String!
     date: DateTime!
     completed: Boolean!

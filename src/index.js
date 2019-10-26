@@ -23,7 +23,7 @@ const getLoggedInUser = async req => {
   if (req.isAuthenticated()) {
     return req.user
   } else {
-    throw new AuthenticationError('Your session expired. Sign in again.')
+    return null
   }
 }
 
@@ -55,7 +55,7 @@ resolve(app);
 
 const server = new ApolloServer({
   introspection: true,
-  playground: true, //!!!process.env.PRODUCTION,
+  playground: true,
   typeDefs: schema,
   resolvers,
   formatError: error => {
@@ -78,15 +78,27 @@ const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
 const isTest = !!!process.env.PRODUCTION
-const isProduction = !!process.env.PRODUCTION
 const port = process.env.PORT || 8000
 
 sequelize.sync({ force: isTest }).then(async () => {
   if (isTest) {
-    // createUsersWithMessages(new Date())
+    createUsersWithTasks()
   }
 
   httpServer.listen({ port }, () => {
     console.log(`Apollo Server on http://localhost:${port}/graphql`)
   })
 })
+
+const createUsersWithTasks = async () => {
+  const user = await models.User.create({
+    name: 'Krushi Raj Tula',
+    email: 'krushiraj123@gmail.com',
+    username: 'krushiraj',
+    gitProfile: 'https://github.com/krushiraj'
+  })
+  const task = await models.Task.create({
+    userId: user.id,
+    date: new Date()
+  })
+}

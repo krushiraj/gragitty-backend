@@ -1,6 +1,5 @@
 import passport from 'passport'
 import { Strategy as GitHubStrategy } from 'passport-github'
-import { graphql } from 'graphql';
 import session from 'express-session'
 
 import models from "../../models";
@@ -25,8 +24,6 @@ const GIT_CONFIG = {
   clientSecret: GITHUB_CLIENT_SECRET,
   callbackURL: `${rootUrl}/auth/callback`
 }
-
-console.log({GIT_CONFIG})
 
 passport.serializeUser((user, done) => {
   done(null, user);

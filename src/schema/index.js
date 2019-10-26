@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express'
 
 import userSchema from './user'
+import taskSchema from './task'
 
 const linkSchema = gql`
   scalar DateTime
@@ -20,5 +21,5 @@ const linkSchema = gql`
 `
 
 export default [
-  linkSchema, userSchema
+  linkSchema, userSchema, taskSchema
 ]
