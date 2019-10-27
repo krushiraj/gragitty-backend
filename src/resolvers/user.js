@@ -19,7 +19,7 @@ export default {
       })
     },
     currentUser: async (parent, args, { models, loggedInUser }) => {
-      if (!loggedInUser) {
+      if (!loggedInUser) {0
         return null;
       }
 

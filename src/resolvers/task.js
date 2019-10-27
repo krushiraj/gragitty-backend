@@ -1,7 +1,7 @@
 import { combineResolvers } from "graphql-resolvers";
 import { AuthenticationError } from "apollo-server";
 
-import { isSelfDeleteAuth, isAuthenticated } from "./authorization";
+import { isSelfTaskDeleteAuth, isAuthenticated } from "./authorization";
 
 export default {
   Query: {
@@ -76,7 +76,7 @@ export default {
     ),
 
     deleteTask: combineResolvers(
-      isSelfDeleteAuth,
+      isSelfTaskDeleteAuth,
       async (parent, { id }, { models }) => {
         return await !!models.Task.destroy({
           where: { id }
