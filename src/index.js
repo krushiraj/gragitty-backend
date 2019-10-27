@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import cors from 'cors'
 import morgan from 'morgan'
+import bodyParser from 'body-parser'
 import http from 'http'
 import jwt from "jsonwebtoken";
 import DataLoader from 'dataloader'
@@ -18,6 +19,10 @@ app.use(cors())
 
 app.use(morgan('dev'))
 
+app.use(express.json())
+
+app.use(bodyParser.urlencoded({extended:true}))
+
 import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
@@ -25,12 +30,10 @@ const getLoggedInUser = async req => {
 
   if (token) {
     try {
-      return await jwt.verify(token, process.env.SECRET);
+      return await jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
       throw new AuthenticationError("Your session expired. Sign in again.");
     }
-  } else {
-    return null
   }
 }
 
@@ -45,9 +48,7 @@ const context = async ({ req, connection }) => {
   }
 
   if (req) {
-    console.log('\n\nGetting logged in user\n\n')
     const loggedInUser = await getLoggedInUser(req);
-    console.log({loggedInUser})
     return {
       models,
       loggedInUser,
@@ -58,8 +59,6 @@ const context = async ({ req, connection }) => {
     };
   }
 };
-
-resolve(app);
 
 const server = new ApolloServer({
   introspection: true,
@@ -85,6 +84,8 @@ server.applyMiddleware({ app, path: '/graphql' })
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
+resolve(app);
+
 const isTest = !!!process.env.PRODUCTION
 const port = process.env.PORT || 8000
 
@@ -100,13 +101,13 @@ sequelize.sync({ force: isTest }).then(async () => {
 
 const createUsersWithTasks = async () => {
   const user = await models.User.create({
-    name: 'Krushi Raj Tula',
-    email: 'krushiraj123@gmail.com',
-    username: 'krushiraj',
-    gitProfile: 'https://github.com/krushiraj'
+    name: 'Krushi Raj',
+    email: 'krushiraj@gmail.com',
+    username: 'krushiraj123',
+    gitProfile: 'https://github.com/krushiraj123'
   })
   const task = await models.Task.create({
     userId: user.id,
-    date: new Date()
+    date: "2019-10-10 12:00"
   })
 }

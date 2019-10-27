@@ -10,19 +10,19 @@ export default gql`
 
   extend type Mutation {
     createTask(
-      message: String!
-      color: String!
+      message: String
+      color: String
       type: String
-      date: DateTime
+      date: String!
       completed: Boolean
-      userId: ID!
+      userId: ID
     ): Task!
 
     updateTask(
       message: String
       color: String
       type: String
-      date: DateTime
+      date: String
       completed: Boolean
       userId: ID
     ): Task!
@@ -36,7 +36,7 @@ export default gql`
     message: String!
     color: String!
     type: String!
-    date: DateTime!
+    date: String!
     completed: Boolean!
 
     user: User!

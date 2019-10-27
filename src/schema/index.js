@@ -4,7 +4,6 @@ import userSchema from './user'
 import taskSchema from './task'
 
 const linkSchema = gql`
-  scalar DateTime
   scalar URL
 
   type Query {

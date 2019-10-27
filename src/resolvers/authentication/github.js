@@ -8,14 +8,14 @@ import models from "../../models";
 const {
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
-  USERNAME,
+  AUTH_USERNAME,
   DATABASE_URL,
   PRODUCTION,
   HOME_URL,
-  JWT_SECRET
+  JWT_SECRET,
 } = process.env
 
-const TOKEN_EXPIRES_IN = "1d"
+const TOKEN_EXPIRES_IN = "30m"
 
 const rootUrl = (
   !!PRODUCTION
@@ -40,6 +40,7 @@ passport.deserializeUser((user, done) => {
 passport.use(
   new GitHubStrategy(GIT_CONFIG, async (accessToken, refreshToken, profile, cb) => {
     const data = profile['_json']
+    console.log({data})
     if(data['type'] === 'User') {
       const [user, created] = await models.User.findOrCreate({
         where: {
@@ -51,7 +52,7 @@ passport.use(
           username: data.login,
           gitProfile: profile.profileUrl
         }
-      })
+      });
       return cb(created || user ? null : new Error("There was an error during authentication."), user);
     } else {
       throw TypeError('The Github profile must belong to a User.')
@@ -79,25 +80,44 @@ const resolve = (app) => {
   );
 
   app.get('/', async (req, res) => {
-    let token;
+    let token = req.headers["x-token"];
+    let check = false, newToken = false
     if (req.isAuthenticated()) {
-      token = await jwt.sign({
-        id: req.user.id,
-        email: req.user.email,
-        username: req.user.username
-      }, JWT_SECRET, {
-        expiresIn: TOKEN_EXPIRES_IN
-      })
+      try {
+        const user = await jwt.verify(token, process.env.JWT_SECRET);
+        if (user.id !== req.user.id) {
+          throw new EvalError('Token courrpted. Please get a new one.')
+        }
+      }
+      catch(e) {
+        token = await jwt.sign({
+          id: req.user.id,
+          email: req.user.email,
+          username: req.user.username
+        }, JWT_SECRET, {
+          expiresIn: TOKEN_EXPIRES_IN
+        })
+        newToken = true;
+      }
+      check = true;
     }
-    res.send({auth: req.isAuthenticated(), user: req.user, token})
+    res.send({
+      auth: req.isAuthenticated(),
+      user: req.user,
+      token: check ? token : 'NO_TOKEN',
+      newToken
+    })
   })
 
   app.get('/database-url', (req, res) => {
+    const { clientID, clientSecret, username } = req.body;
     if(
-      DATABASE_URL &&
-      req.body.username === USERNAME
+      (!!DATABASE_URL || !PRODUCTION) &&
+      clientID === GITHUB_CLIENT_ID &&
+      clientSecret === GITHUB_CLIENT_SECRET &&
+      username === AUTH_USERNAME
     ) {
-      res.send(DATABASE_URL)
+      res.send(DATABASE_URL || 'NOTHING CONFIGURED')
     } else {
       res.send('INVALID URL')
     }

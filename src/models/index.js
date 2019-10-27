@@ -5,13 +5,18 @@ import { development, production } from '../config/config'
 import user from './user'
 import task from './task'
 
-const dbconfig = !!process.env.PRODUCTION ? production : development
+const {
+  PRODUCTION,
+  DATABASE_URL
+} = process.env
+
+const dbconfig = !!PRODUCTION ? production : development
 
 let sequelize;
 
-if(process.env.DATABASE_URL) {
+if(DATABASE_URL && !!PRODUCTION) {
   sequelize = new Sequelize(
-    process.env.DATABASE_URL,
+    DATABASE_URL,
     { dialect: dbconfig.dialect }
   );
 } else {

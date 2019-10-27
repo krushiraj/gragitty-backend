@@ -34,8 +34,8 @@ const task = (sequelize, DataTypes) => {
       defaultValue: EMPTY
     },
     date: {
-      type: DataTypes.DATE,
-      unique: true,
+      type: DataTypes.STRING,
+      unique: 'unique_task',
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -50,18 +50,29 @@ const task = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true
       },
+      unique: 'unique_task',
       defaultValue: COMMIT
     },
     completed: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    userId: {
+      type: DataTypes.UUID,
+      unique: 'unique_task',
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     }
   });
 
   Task.associate = models => {
     Task.belongsTo(models.User, {
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
+      constraints: true,
+      foreignKey: 'userId'
     });
   }
 

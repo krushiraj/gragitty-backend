@@ -44,15 +44,34 @@ export default {
     createTask: combineResolvers(
       isAuthenticated,
       async (parent, args, { models, loggedInUser }) => {
-        return await models.Task.create({ ...args, userId: loggedInUser.id });
+        console.log({
+          loggedInUser,
+          userId: args.userId ? args.userId : loggedInUser.id
+        });
+        return await models.Task.create({
+          ...args,
+          userId: (args.userId ? args.userId : loggedInUser.id)
+        });
       }
     ),
 
     updateTask: combineResolvers(
       isAuthenticated,
       async (parent, args, { models, loggedInUser }) => {
-        const task = await models.Task.findByPk(args.id);
-        return await task.update({ ...args, userId: loggedInUser.id });
+        // const task = await models.Task.findByPk(args.id);
+        console.log(parent)
+        let userId = parent.userId
+        if (userId !== args.userId) {
+          if (args.userId) {
+            userId = args.userId
+          } else {
+            userId = loggedInUser.id
+          }
+        }
+        return await parent.update({
+          ...args,
+          userId
+        });
       }
     ),
 
@@ -68,7 +87,7 @@ export default {
 
   Task: {
     user: async (parent, args, { models }) => {
-      return await models.User.findByPk(parent.id);
+      return await models.User.findByPk(parent.userId);
     }
   }
 };
