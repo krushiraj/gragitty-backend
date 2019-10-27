@@ -20,7 +20,7 @@ const user = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true,
         isEmail: true
@@ -41,14 +41,6 @@ const user = (sequelize, DataTypes) => {
         "https://i0.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png?fit=256%2C256&quality=100&ssl=1"
     }
   });
-
-  User.findByLogin = async login => {
-    let user = await User.findOne({
-      where: { email: login }
-    })
-
-    return user
-  }
 
   return User
 }

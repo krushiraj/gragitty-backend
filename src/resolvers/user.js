@@ -5,21 +5,28 @@ import { isSelfDeleteAuth, isAuthenticated } from './authorization'
 export default {
   Query: {
     allUsers: async (parent, args, { models }) => {
-      const allUsers = await models.User.findAll()
-      return allUsers
+      const allUsers = await models.User.findAll();
+      return allUsers;
     },
     userById: async (parent, { id }, { models }) => {
-      return await models.User.findByPk(id)
+      return await models.User.findByPk(id);
     },
     userByEmail: async (parent, { email }, { models }) => {
       return await models.User.findOne({
         where: {
           email
         }
-      })
+      });
+    },
+    userByUsername: async (parent, { username }, { models }) => {
+      return await models.User.findOne({
+        where: {
+          username
+        }
+      });
     },
     currentUser: async (parent, args, { models, loggedInUser }) => {
-      if (!loggedInUser) {0
+      if (!loggedInUser) {
         return null;
       }
 

@@ -4,6 +4,7 @@ export default gql`
   extend type Query {
     allUsers: [User]!
     userById(id: ID!): User
+    userByUsername(username: String!): User
     userByEmail(email: String!): User
     currentUser: User
   }
@@ -24,7 +25,7 @@ export default gql`
     id: ID!
 
     name: String!
-    email: String!
+    email: String
     username: String!
     profilePic: URL!
     gitProfile: URL!
