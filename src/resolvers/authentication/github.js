@@ -40,7 +40,6 @@ passport.deserializeUser((user, done) => {
 passport.use(
   new GitHubStrategy(GIT_CONFIG, async (accessToken, refreshToken, profile, cb) => {
     const data = profile['_json']
-    console.log({data})
     if(data['type'] === 'User') {
       const [user, created] = await models.User.findOrCreate({
         where: {
@@ -74,13 +73,13 @@ const resolve = (app) => {
   app.get(
     "/auth/callback",
     passport.authenticate("github", {
-      failureRedirect: "/login",
-      successRedirect: "/"
+      failureRedirect: "/auth",
+      successRedirect: `/${!!PRODUCTION ? '?success=true' : ''}`
     }),
   );
 
   app.get('/', async (req, res) => {
-    let token = req.headers["x-token"];
+    let token = req.headers["x-token"] || 'NO_TOKEN';
     let check = false, newToken = false
     if (req.isAuthenticated()) {
       try {
@@ -101,12 +100,19 @@ const resolve = (app) => {
       }
       check = true;
     }
-    res.send({
-      auth: req.isAuthenticated(),
-      user: req.user,
-      token: check ? token : 'NO_TOKEN',
-      newToken
-    })
+    if (req.query.success) {
+      const success = (
+        req.isAuthenticated() &&
+        check && token
+      )
+      res.redirect(`https://gragitty.netlify.com/login?success=${success}`);
+    } else {
+      res.send({
+        auth: req.isAuthenticated(),
+        token,
+        newToken
+      });
+    }
   })
 
   app.get('/database-url', (req, res) => {
