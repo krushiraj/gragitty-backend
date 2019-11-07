@@ -101,7 +101,7 @@ const resolve = (app) => {
       check = true;
     }
     if (req.query.success) {
-      const success = (
+      const success = !!(
         req.isAuthenticated() &&
         check && token
       )
