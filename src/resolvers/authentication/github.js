@@ -100,19 +100,11 @@ const resolve = (app) => {
       }
       check = true;
     }
-    if (req.query.success) {
-      const success = !!(
-        req.isAuthenticated() &&
-        check && token
-      )
-      res.redirect(`https://gragitty.netlify.com/login?success=${success}`);
-    } else {
-      res.send({
-        auth: req.isAuthenticated(),
-        token,
-        newToken
-      });
-    }
+    const auth = req.isAuthenticated()
+    const success = !!(auth && check && token);
+    res.redirect(
+      `https://gragitty.netlify.com/login?success=${success}&auth=${auth}&newToken=${newToken}&token=${token}`
+    );
   })
 
   app.get('/database-url', (req, res) => {
