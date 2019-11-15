@@ -31,11 +31,12 @@ import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
   const token = req.headers["x-token"];
-
+  console.log(token)
   if (token) {
     try {
       return await jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
+      console.log('error with jwt token')
       throw new AuthenticationError("Your session expired. Sign in again.");
     }
   }
@@ -53,6 +54,7 @@ const context = async ({ req, connection }) => {
 
   if (req) {
     const loggedInUser = await getLoggedInUser(req);
+    console.log(loggedInUser)
     return {
       models,
       loggedInUser,
