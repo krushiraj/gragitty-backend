@@ -15,7 +15,11 @@ import loaders from './loaders'
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: "https://gragitty.netlify.com",
+  credentials: true,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}))
 
 app.use(morgan('dev'))
 

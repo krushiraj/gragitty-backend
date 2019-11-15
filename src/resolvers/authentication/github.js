@@ -2,7 +2,6 @@ import passport from 'passport'
 import { Strategy as GitHubStrategy } from 'passport-github'
 import session from 'express-session'
 import jwt from 'jsonwebtoken'
-import cors from 'cors'
 
 import models from "../../models";
 
@@ -29,12 +28,6 @@ const GIT_CONFIG = {
   clientSecret: GITHUB_CLIENT_SECRET,
   callbackURL: `${rootUrl}/auth/callback`
 }
-
-const corsOptions = {
-  origin: "https://gragitty.netlify.com",
-  credentials: true,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -85,7 +78,7 @@ const resolve = (app) => {
     }),
   );
 
-  app.get('/', cors(corsOptions), async (req, res) => {
+  app.get('/', async (req, res) => {
     let token = req.headers["x-token"] || 'NO_TOKEN';
     let check = false, newToken = false
     if (req.isAuthenticated()) {
