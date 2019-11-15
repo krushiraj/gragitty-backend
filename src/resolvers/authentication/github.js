@@ -100,6 +100,13 @@ const resolve = (app) => {
       }
       check = true;
     }
+    if (req.query.refresh) {
+      res.send({
+        auth,
+        newToken,
+        token
+      })
+    }
     const auth = req.isAuthenticated()
     const success = !!(auth && check && token);
     res.redirect(
