@@ -44,10 +44,10 @@ export default {
     createTask: combineResolvers(
       isAuthenticated,
       async (parent, args, { models, loggedInUser }) => {
-        console.log({
-          loggedInUser,
-          userId: args.userId ? args.userId : loggedInUser.id
-        });
+        // console.log({
+        //   loggedInUser,
+        //   userId: args.userId ? args.userId : loggedInUser.id
+        // });
         return await models.Task.create({
           ...args,
           userId: (args.userId ? args.userId : loggedInUser.id)
@@ -59,7 +59,7 @@ export default {
       isAuthenticated,
       async (parent, args, { models, loggedInUser }) => {
         // const task = await models.Task.findByPk(args.id);
-        console.log(parent)
+        // console.log(parent)
         let userId = parent.userId
         if (userId !== args.userId) {
           if (args.userId) {

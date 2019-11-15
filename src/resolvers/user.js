@@ -30,7 +30,7 @@ export default {
         return null;
       }
 
-      return loggedInUser;
+      return await models.User.findByPk(loggedInUser.id);
     }
   },
 
