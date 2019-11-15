@@ -31,7 +31,7 @@ const GIT_CONFIG = {
 }
 
 const corsOptions = {
-  origin: "http://gragitty.netlify.com",
+  origin: "https://gragitty.netlify.com",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
