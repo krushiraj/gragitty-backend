@@ -100,6 +100,7 @@ const resolve = (app) => {
       }
       check = true;
     }
+    const auth = req.isAuthenticated()
     if (req.query.refresh) {
       res.send({
         auth,
@@ -107,7 +108,6 @@ const resolve = (app) => {
         token
       })
     }
-    const auth = req.isAuthenticated()
     const success = !!(auth && check && token);
     res.redirect(
       `https://gragitty.netlify.com/login?success=${success}&auth=${auth}&newToken=${newToken}&token=${token}`
