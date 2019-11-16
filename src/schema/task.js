@@ -38,6 +38,7 @@ export default gql`
     type: String!
     date: String!
     completed: Boolean!
+    createdAt: String
 
     user: User!
   }

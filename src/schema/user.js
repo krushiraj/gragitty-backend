@@ -25,9 +25,10 @@ export default gql`
     id: ID!
 
     name: String!
-    email: String
+    email: String!
     username: String!
     profilePic: URL!
     gitProfile: URL!
+    createdAt: String
   }
 `;
