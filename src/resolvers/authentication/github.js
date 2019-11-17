@@ -15,7 +15,7 @@ const {
   JWT_SECRET,
 } = process.env
 
-const TOKEN_EXPIRES_IN = "30m"
+const TOKEN_EXPIRES_IN = "24h"
 
 const rootUrl = (
   !!PRODUCTION
