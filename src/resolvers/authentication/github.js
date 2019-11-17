@@ -4,6 +4,7 @@ import session from 'express-session'
 import jwt from 'jsonwebtoken'
 
 import models from "../../models";
+import { ALLOW_ORIGIN } from '../../utils/constants';
 
 const {
   GITHUB_CLIENT_ID,
@@ -74,11 +75,12 @@ const resolve = (app) => {
     "/auth/callback",
     passport.authenticate("github", {
       failureRedirect: "/auth",
-      successRedirect: `/${!!PRODUCTION ? '?success=true' : ''}`
+      successRedirect: `/?success=true`
     }),
   );
 
   app.get('/', async (req, res) => {
+    console.log(req.get('origin'))
     let token = req.headers["x-token"] || 'NO_TOKEN';
     let check = false, newToken = false
     if (req.isAuthenticated()) {
@@ -104,7 +106,7 @@ const resolve = (app) => {
     const success = !!(auth && check && token);
     if (req.query.success) {
       res.redirect(
-        `https://gragitty.netlify.com/login?success=${success}&auth=${auth}&newToken=${newToken}&token=${token}`
+        `${ALLOW_ORIGIN}/login?success=${success}&auth=${auth}&newToken=${newToken}&token=${token}`
       );
     }
     res.send({

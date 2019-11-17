@@ -13,10 +13,13 @@ import resolvers from './resolvers'
 import models, { sequelize } from './models/index'
 import loaders from './loaders'
 
+import resolve from "./resolvers/authentication/github";
+import { ALLOW_ORIGIN } from "./utils/constants";
+
 const app = express()
 
 app.use(cors({
-  origin: "https://gragitty.netlify.com",
+  origin: ALLOW_ORIGIN,
   credentials: true,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }))
@@ -26,8 +29,6 @@ app.use(morgan('dev'))
 app.use(express.json())
 
 app.use(bodyParser.urlencoded({extended:true}))
-
-import resolve from './resolvers/authentication/github'
 
 const getLoggedInUser = async req => {
   const token = req.headers["x-token"];
