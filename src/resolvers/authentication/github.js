@@ -84,7 +84,6 @@ const resolve = (app) => {
 
   // Base endpoint for auth and redirect
   app.get('/', async (req, res) => {
-    console.log(req.get('origin'))
     let token = req.headers["x-token"] || 'NO_TOKEN';
     let check = false, newToken = false
     if (req.isAuthenticated()) {

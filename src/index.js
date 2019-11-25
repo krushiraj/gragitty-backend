@@ -32,7 +32,6 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 const getLoggedInUser = async req => {
   const token = req.headers["x-token"];
-  // console.log(token)
   if (token) {
     try {
       return await jwt.verify(token, process.env.JWT_SECRET);
@@ -55,7 +54,6 @@ const context = async ({ req, connection }) => {
 
   if (req) {
     const loggedInUser = await getLoggedInUser(req);
-    // console.log(loggedInUser)
     return {
       models,
       loggedInUser,
