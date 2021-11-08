@@ -32,7 +32,7 @@
     "@babel/node": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
     "@bearer/node": "^2.0.0",
-    "apollo-server": "^2.14.2",
+    "apollo-server": "^2.25.3",
     "apollo-server-express": "^2.14.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.6",
